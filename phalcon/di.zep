@@ -21,6 +21,7 @@ use Phalcon\Di\ServiceInterface;
 use Phalcon\Events\ManagerInterface;
 use Phalcon\Di\InjectionAwareInterface;
 use Phalcon\Di\ServiceProviderInterface;
+use Phalcon\Di\Service\AutosetupInterface;
 
 /**
  * Phalcon\Di
@@ -243,12 +244,17 @@ class Di implements DiInterface
 			}
 		}
 
-		/**
-		 * Pass the DI itself if the instance implements \Phalcon\Di\InjectionAwareInterface
-		 */
+		// Check for special interfaces.
 		if typeof instance == "object" {
+
+			// Pass the DI to the instance if it implements \Phalcon\Di\InjectionAwareInterface
 			if instance instanceof InjectionAwareInterface {
 				instance->setDI(this);
+			}
+
+			// Automatically setup the instance if it implements \Phalcon\Di\Service\AutosetupInterface
+			if instance instanceof AutosetupInterface {
+				instance->autosetup();
 			}
 		}
 
